@@ -18,6 +18,26 @@ docker-compose logs -f ollama
 docker-compose down
 ```
 
+### GPU Support
+
+To enable GPU acceleration:
+
+1. **Update .env file:**
+   ```bash
+   USE_GPU=true
+   OLLAMA_NUM_GPU=1
+   ```
+
+2. **Enable GPU in docker-compose.yml:**
+   Uncomment the GPU reservation section:
+   ```yaml
+   reservations:
+     devices:
+       - capabilities: [ gpu ]
+   ```
+
+3. **Ensure nvidia-docker is installed** on your host system
+
 ## Configuration
 
 The server is configured via [.env](.env.example) file:
@@ -28,6 +48,8 @@ The server is configured via [.env](.env.example) file:
 | `OLLAMA_NUM_PARALLEL` | 1 | Number of concurrent requests |
 | `OLLAMA_MAX_LOADED_MODELS` | 1 | Models kept in memory |
 | `OLLAMA_KEEP_ALIVE` | 5m | How long models stay loaded |
+| `USE_GPU` | false | Enable GPU passthrough (requires uncommenting GPU config) |
+| `OLLAMA_NUM_GPU` | 0 | Number of GPUs to use (0 for CPU only) |
 | `MEMORY_LIMIT` | 8g | Maximum memory usage |
 | `CPU_LIMIT` | 4 | Maximum CPU cores |
 
