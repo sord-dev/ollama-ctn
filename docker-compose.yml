@@ -3,9 +3,9 @@ services:
     image: ollama/ollama:latest
     container_name: ollama-server
     ports:
-      - "${OLLAMA_PORT:-11435}:11434"
+      - "${OLLAMA_PORT:-11434}:11434"
     volumes:
-      - ollama-data:/root/.ollama
+      - ~/.ollama:/root/.ollama
     environment:
       - OLLAMA_NUM_PARALLEL=${OLLAMA_NUM_PARALLEL}
       - OLLAMA_MAX_LOADED_MODELS=${OLLAMA_MAX_LOADED_MODELS}
@@ -26,13 +26,10 @@ services:
     deploy:
       resources:
         limits:
-          memory: ${MEMORY_LIMIT:-8g}
+          memory: "${MEMORY_LIMIT:-8g}"
           cpus: "${CPU_LIMIT:-4}"
-        # Uncomment the following section to enable GPU support:
-        # reservations:
-        #   devices:
-        #     - capabilities: [ gpu ]
-
-volumes:
-  ollama-data:
-    driver: local
+        reservations:
+          devices:
+            - driver: nvidia
+              count: ${OLLAMA_NUM_GPU:-1}
+              capabilities: [ gpu ]
